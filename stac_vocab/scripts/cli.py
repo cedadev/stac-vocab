@@ -7,6 +7,11 @@ __license__ = "BSD - see LICENSE file in top-level package directory"
 import argparse
 import sys
 
+# from stac_vocab.core import VocabImporter
+# list_workflows
+# Run all
+# Run specific workflows
+
 
 def main():
     """Console script for stac_vocab."""

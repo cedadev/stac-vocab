@@ -81,5 +81,8 @@ setup(
     extras_require={"docs": docs_requirements,
                     "dev": dev_requirements},
     url='https://github.com/rsmith013/stac_vocab',
+    entry_points={
+        'stac_vocab=stac_vocab.scripts.cli:main',
+    }
     zip_safe=False,
 )
