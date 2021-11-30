@@ -6,7 +6,7 @@ Retrieve controlled vocabularies from external sources to generate a local cache
 
 Construct a shared vocabulary which can map to one or more sub-vocabs.
 
-.. image:: docs/images/Vocab Generator.png
+.. image:: docs/images/vocab_generator.png
 
 Features
 --------
