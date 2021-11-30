@@ -1,27 +1,12 @@
 ==========
-stac_vocab
+STAC Vocab
 ==========
 
+Retrieve controlled vocabularies from external sources to generate a local cache in a common format.
 
-.. image:: https://img.shields.io/pypi/v/stac_vocab.svg
-        :target: https://pypi.python.org/pypi/stac_vocab
+Construct a shared vocabulary which can map to one or more sub-vocabs.
 
-.. image:: https://img.shields.io/travis/rsmith013/stac_vocab.svg
-        :target: https://travis-ci.com/rsmith013/stac_vocab
-
-.. image:: https://readthedocs.org/projects/stac-vocab/badge/?version=latest
-        :target: https://stac-vocab.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-
-
-
-A short description goes here
-
-
-* Free software: BSD - see LICENSE file in top-level package directory
-* Documentation: https://stac-vocab.readthedocs.io.
-
+.. image:: docs/images/Vocab Generator.png
 
 Features
 --------
@@ -31,7 +16,7 @@ Features
 Credits
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+This package was created with Cookiecutter_ and the `cedadev/cookiecutter-pypackage`_ project template.
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
