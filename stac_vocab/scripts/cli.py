@@ -6,8 +6,7 @@ __copyright__ = "Copyright 2020 United Kingdom Research and Innovation"
 __license__ = "BSD - see LICENSE file in top-level package directory"
 import argparse
 import sys
-
-# from stac_vocab.core import VocabImporter
+from stac_vocab.core.stac_vocab import VocabImporter
 # list_workflows
 # Run all
 # Run specific workflows
@@ -19,9 +18,11 @@ def main():
     parser.add_argument('_', nargs='*')
     args = parser.parse_args()
 
-    print("Arguments: " + str(args._))
-    print("Replace this message by putting your code into "
-          "stac_vocab.cli.main")
+    vocab_importer = VocabImporter()
+    vocab_importer.create_cache()
+    vocab_importer.create_ceda()
+
+    print("Code run successfully")
     return 0
 
 

@@ -20,7 +20,7 @@ config = {
 }
 
 
-@WorkflowFactory.register('Cmip6Workflow')
+# @WorkflowFactory.register('Cmip6Workflow')
 class Cmip6Workflow(BaseWorkflow):
 
     IMPORTER_CLASS = JSONImporter

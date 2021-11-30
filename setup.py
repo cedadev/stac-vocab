@@ -65,7 +65,7 @@ setup(
     description="A short description goes here",
     entry_points={
         'console_scripts': [
-            'stac_vocab=stac_vocab.cli:main',
+            'stac_vocab=stac_vocab.scripts.cli:main',
         ],
     },
     install_requires=requirements,
@@ -81,8 +81,5 @@ setup(
     extras_require={"docs": docs_requirements,
                     "dev": dev_requirements},
     url='https://github.com/rsmith013/stac_vocab',
-    entry_points={
-        'stac_vocab=stac_vocab.scripts.cli:main',
-    }
     zip_safe=False,
 )
