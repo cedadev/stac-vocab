@@ -75,7 +75,7 @@ setup(
     include_package_data=True,
     keywords='stac_vocab',
     name='stac_vocab',
-    packages=find_packages(include=['stac_vocab', 'stac_vocab.*']),
+    packages=find_packages(),
     test_suite='tests',
     tests_require=test_requirements,
     extras_require={"docs": docs_requirements,

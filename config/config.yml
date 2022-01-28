@@ -1,0 +1,15 @@
+concept_schemes:
+  - name: model
+    description: A model is a...
+    sub_schemes:
+      - name: source_id
+        namespace: http://test.org/cmip6
+      - name: model
+        namespace: http://test.org/cmip5
+workflows:
+  cmip6:
+    concepts:
+      - name: source_id
+        location: https://github.com/WCRP-CMIP/CMIP6_CVs/raw/master/CMIP6_source_id.json
+      - name: source_type
+        location: https://github.com/WCRP-CMIP/CMIP6_CVs/raw/master/CMIP6_source_type.json

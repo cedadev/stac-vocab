@@ -13,9 +13,13 @@ from abc import ABCMeta, abstractmethod
 import logging
 import json
 from glob import glob
-from typing import Callable
-from ..sources.base import BaseWorkflow
+from typing import Callable, List
+
 from rdflib import Graph, RDF, Namespace, SKOS
+import requests
+
+from stac_vocab.sources.base import BaseWorkflow
+from stac_vocab.core.conf import ConceptSchemeConfig, WorkflowConfig
 
 logger = logging.getLogger(__name__)
 
@@ -70,23 +74,40 @@ class WorkflowFactory:
 class Cmip6Workflow(BaseWorkflow):
     """? or importer class see. cmip5"""
 
+    def load_source(self, source: str) -> dict:
+        """Load the vocabulary source.
+        
+        Handles loading from remote URLs or local files
+        """
+        logger.info(f'Loading {source} ')
 
-    def create_vocab(self, config):
+        # Check to see if source is web hosted
+        if source.startswith('http'):
+            r = requests.get(source)
+            if r.status_code == 200:
+                return r.json()
+        else:
+            with open(source) as reader:
+                return json.loads(reader)
+
+
+    def create_vocab(self, config: WorkflowConfig) -> Graph:
         graph = Graph()
         graph.bind('skos', SKOS)
         namespace = Namespace("http://test.org/cmip6/")
-        for concept in config["concepts"]:
-            with open(concept["location"]) as f:
-                facets = json.load(f)
-                graph.add((namespace[concept["name"]], RDF.type, SKOS.ConceptScheme))
+        for concept in config.concepts:
 
-            for f, value in facets[concept["name"]].items():
-                graph.add((namespace[f], RDF.type, SKOS.Concept))
-                graph.add((namespace[f], SKOS.inScheme, namespace[concept["name"]]))
+            facets = self.load_source(concept.location)
+
+            graph.add((namespace[concept.name], RDF.type, SKOS.ConceptScheme))
+
+            for key, value in facets[concept.name].items():
+                graph.add((namespace[key], RDF.type, SKOS.Concept))
+                graph.add((namespace[key], SKOS.inScheme, namespace[concept.name]))
             
         return graph
 
-    def run(self, config):
+    def run(self, config: WorkflowConfig) -> Graph:
         vocab = self.create_vocab(config)
 
         return vocab
@@ -97,7 +118,7 @@ class CedaWorkflow(BaseWorkflow):
     """? or importer class see. cmip5"""
 
 
-    def create_vocab(self, config):
+    def create_vocab(self, concept_schemes: List[ConceptSchemeConfig]) -> Graph:
         graph = Graph()
         graph.bind('skos', SKOS)
         # read vocabs from cache
@@ -106,16 +127,16 @@ class CedaWorkflow(BaseWorkflow):
         
         namespace = Namespace("http://test.org/ceda/")
 
-        for concept_scheme in config["concept_schemes"]:
-            graph.add((namespace[concept_scheme["name"]], RDF.type, SKOS.ConceptScheme))
+        for concept_scheme in concept_schemes:
+            graph.add((namespace[concept_scheme.name], RDF.type, SKOS.ConceptScheme))
 
-            for sub_scheme in concept_scheme["sub_schemes"]:
-                sub_namespace =  Namespace(sub_scheme["namespace"])
-                graph.add((sub_namespace[sub_scheme["name"]], SKOS.narrower, namespace[concept_scheme["name"]]))
+            for sub_scheme in concept_scheme.sub_schemes:
+                sub_namespace =  Namespace(sub_scheme.namespace)
+                graph.add((sub_namespace[sub_scheme.name], SKOS.narrower, namespace[concept_scheme.name]))
         
         return graph
 
-    def run(self, config):
-        vocab = self.create_vocab(config)
+    def run(self, concept_schemes: List[ConceptSchemeConfig]) -> Graph:
+        vocab = self.create_vocab(concept_schemes)
 
         return vocab

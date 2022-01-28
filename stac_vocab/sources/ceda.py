@@ -9,7 +9,7 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from .base import BaseWorkflow
-from stac_vocab import WorkflowFactory
+from stac_vocab.core import WorkflowFactory
 
 import json
 from rdflib import Graph, RDF, Namespace, SKOS
