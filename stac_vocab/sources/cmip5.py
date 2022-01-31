@@ -9,7 +9,6 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from .base import BaseWorkflow
-from stac_vocab import WorkflowFactory
 
 # Use the JSON importer
 # Create and RDF object

@@ -10,13 +10,17 @@ from .register import WorkflowFactory
 cache_config = {
     "workflows": {
         "cmip6": {
-            "concepts": [
+            "concept_schemes": [
                 {
                     "name": "source_id",
+                    "prefLabel": "source_id",
+                    "altLabel": "Source ID",
                     "location": "../../CMIP6_source_id.json",
                 },
                 {
                     "name": "source_type",
+                    "prefLabel": "source_type",
+                    "altLabel": "Source Type",
                     "location": "../../CMIP6_source_type.json",
                 },
             ],
@@ -28,6 +32,7 @@ ceda_config = {
     "concept_schemes": [
         {
             "name": "model",
+            "prefLabel": "model",
             "description": "A model is a ...",
             "sub_schemes": [
                 {
@@ -62,7 +67,6 @@ class VocabImporter:
 
     def create_ceda(self):
         ...
-
         # run ceda workflow
         workflow = WorkflowFactory.registry["ceda"]
         vocab = workflow().run(ceda_config)

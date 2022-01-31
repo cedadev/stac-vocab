@@ -15,7 +15,7 @@ import json
 from glob import glob
 from typing import Callable
 from ..sources.base import BaseWorkflow
-from rdflib import Graph, RDF, Namespace, SKOS
+from rdflib import Graph, Literal, Namespace, RDF, SKOS
 
 logger = logging.getLogger(__name__)
 
@@ -75,15 +75,37 @@ class Cmip6Workflow(BaseWorkflow):
         graph = Graph()
         graph.bind('skos', SKOS)
         namespace = Namespace("http://test.org/cmip6/")
-        for concept in config["concepts"]:
-            with open(concept["location"]) as f:
+        for concept_scheme in config["concept_schemes"]:
+            with open(concept_scheme["location"]) as f:
                 facets = json.load(f)
-                graph.add((namespace[concept["name"]], RDF.type, SKOS.ConceptScheme))
+                concept_scheme_uri = namespace[concept_scheme["name"]]
+                graph.add((concept_scheme_uri, RDF.type, SKOS.ConceptScheme))
+                graph.add((concept_scheme_uri, SKOS.prefLabel, Literal(concept_scheme["prefLabel"], lang='en')))
 
-            for f, value in facets[concept["name"]].items():
-                graph.add((namespace[f], RDF.type, SKOS.Concept))
-                graph.add((namespace[f], SKOS.inScheme, namespace[concept["name"]]))
-            
+                if "altLabel" in concept_scheme.keys():
+                    graph.add((concept_scheme_uri, SKOS.altLabel, Literal(concept_scheme["altLabel"], lang='en')))
+
+            for key, concept in facets[concept_scheme["name"]].items():
+                if isinstance(concept, str):
+                    concept_uri = namespace[key]
+                    graph.add((concept_uri, RDF.type, SKOS.Concept))
+                    graph.add((concept_uri, SKOS.inScheme, concept_scheme_uri))
+                    graph.add((concept_uri, SKOS.prefLabel, Literal(key, lang='en')))
+                    graph.add((concept_uri, SKOS.definition, Literal(concept, lang='en')))
+
+                else:
+                    concept_uri = namespace[key]
+                    graph.add((concept_uri, RDF.type, SKOS.Concept))
+                    graph.add((concept_uri, SKOS.inScheme, concept_scheme_uri))
+                    
+                    if "label" in concept.keys():
+                        graph.add((concept_uri, SKOS.prefLabel, Literal(concept["label"], lang='en')))
+                    else:
+                        graph.add((concept_uri, SKOS.prefLabel, Literal(key, lang='en')))
+                    
+                    if "label_extended" in concept.keys():
+                        graph.add((concept_uri, SKOS.definition, Literal(concept["label_extended"], lang='en')))
+                    
         return graph
 
     def run(self, config):
@@ -107,11 +129,16 @@ class CedaWorkflow(BaseWorkflow):
         namespace = Namespace("http://test.org/ceda/")
 
         for concept_scheme in config["concept_schemes"]:
-            graph.add((namespace[concept_scheme["name"]], RDF.type, SKOS.ConceptScheme))
+            concept_scheme_uri = namespace[concept_scheme["name"]]
+            graph.add((concept_scheme_uri, RDF.type, SKOS.ConceptScheme))
+            graph.add((concept_scheme_uri, SKOS.prefLabel, Literal(concept_scheme["prefLabel"], lang='en')))
+            if "definition" in concept_scheme.keys():
+                        graph.add((concept_scheme_uri, SKOS.definition, Literal(concept_scheme["definition"], lang='en')))
 
             for sub_scheme in concept_scheme["sub_schemes"]:
                 sub_namespace =  Namespace(sub_scheme["namespace"])
-                graph.add((sub_namespace[sub_scheme["name"]], SKOS.narrower, namespace[concept_scheme["name"]]))
+                graph.add((concept_scheme_uri, SKOS.narrower, sub_namespace[sub_scheme["name"]]))
+                graph.add((sub_namespace[sub_scheme["name"]], SKOS.broader, concept_scheme_uri))
         
         return graph
 
