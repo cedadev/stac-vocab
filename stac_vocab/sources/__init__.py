@@ -8,6 +8,5 @@ __copyright__ = 'Copyright 2018 United Kingdom Research and Innovation'
 __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
-# from .ceda import CedaWorkflow
-# from .cmip6 import Cmip6Workflow
-from .base import BaseWorkflow
+from .ceda import CedaWorkflow
+from .cmip6 import Cmip6Workflow

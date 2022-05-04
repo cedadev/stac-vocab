@@ -8,7 +8,7 @@ __copyright__ = 'Copyright 2018 United Kingdom Research and Innovation'
 __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
-from .base import BaseWorkflow
+from .workflow import BaseWorkflow
 
 # Use the JSON importer
 # Create and RDF object
