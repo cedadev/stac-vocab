@@ -31,7 +31,7 @@ class VocabImporter:
         vocab_descriptions = VocabDescriptions(self.conf["VOCAB"]["description_path"])
         self.vocab_descriptions = vocab_descriptions
 
-    def create_cache(self):
+    def create_cache(self) -> None:
         ...
         # collect workflows (some might be skipped)
 
@@ -46,7 +46,7 @@ class VocabImporter:
             workflow = WorkflowFactory.registry.get(external_vocab_description.workflow)(self.conf, namespace, inputs)
             workflow.run()
 
-    def create_ceda(self):
+    def create_ceda_vocab(self) -> None:
         ...
         # run ceda workflow
         general_vocab_description = self.vocab_descriptions.get_general_vocab_description()

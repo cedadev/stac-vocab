@@ -20,7 +20,7 @@ def main():
 
     vocab_importer = VocabImporter(args.conf_path)
     vocab_importer.create_cache()
-    vocab_importer.create_ceda()
+    vocab_importer.create_ceda_vocab()
 
     print("Code run successfully")
     return 0

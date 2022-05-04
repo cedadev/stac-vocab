@@ -10,7 +10,7 @@ __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from pydantic import BaseModel
 
-from ..core import WorkflowFactory, BaseWorkflow, CEDAConceptScheme, CEDASubScheme
+from ..core import WorkflowFactory, BaseWorkflow, CEDAConceptScheme
 
 
 class CEDAWorkflowInputs(BaseModel):

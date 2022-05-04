@@ -61,16 +61,16 @@ class BaseWorkflow(metaclass=ABCMeta):
         self.inputs = self.INPUTS_CLASS(**inputs)
 
     @abstractmethod
-    def run(self, conf: ConfigParser, command: str) -> (dict):
+    def run(self, conf: ConfigParser, command: str):
         """ Abstract method to run a command """
         ...
 
     @abstractmethod
-    def parser(self, raw_concept_scheme: dict) -> (dict):
+    def parser(self, raw_concept_scheme: dict) -> CEDAConceptScheme:
         """ Abstract method to parse a vocab """
         ...
 
-    def create_vocab(self, concept_schemes: list[CEDAConceptScheme]):
+    def create_vocab(self, concept_schemes: list[CEDAConceptScheme]) -> None:
         """ method to create vocab """
         graph = Graph()
         graph.bind('skos', SKOS)
