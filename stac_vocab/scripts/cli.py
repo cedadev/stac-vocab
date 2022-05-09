@@ -8,7 +8,6 @@ import argparse
 import sys
 
 from stac_vocab.core.stac_vocab import VocabImporter
-import stac_vocab.sources
 
 def main():
     """Console script for stac_vocab."""

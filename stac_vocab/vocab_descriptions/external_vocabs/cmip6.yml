@@ -7,10 +7,8 @@ workflow_inputs:
       alt_label: Source ID
       description: "A source id is a ..."
       location: "../CMIP6_source_id.json"
-      parser: json
     - name: source_type
       pref_label: source_type
       alt_label: Source Type
       description: "A source type is a ..."
       location: "../CMIP6_source_type.json"
-      parser: json

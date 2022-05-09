@@ -10,8 +10,6 @@ __license__ = "BSD - see LICENSE file in top-level package directory"
 __contact__ = "rhys.r.evans@stfc.ac.uk"
 
 
-from collections import defaultdict
-from email.policy import default
 import logging
 
 # Python imports
