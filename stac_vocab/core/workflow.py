@@ -23,6 +23,7 @@ class CEDAConcept(BaseModel):
     name: str
     pref_label: str
 
+    alt_label: Optional[str]
     definition: Optional[str]
 
 

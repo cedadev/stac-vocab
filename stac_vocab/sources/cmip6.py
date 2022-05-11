@@ -67,48 +67,75 @@ class Cmip6Workflow(BaseWorkflow):
         )
 
         if raw_concept_scheme.alt_label:
+
             concept_scheme.alt_label = raw_concept_scheme.alt_label
 
         if raw_concept_scheme.description:
+
             concept_scheme.definition = raw_concept_scheme.description
 
         with open(raw_concept_scheme.location) as f:
+
             facets = json.load(f)
             concepts = []
-            for name, raw_concept in facets[raw_concept_scheme.name].items():
-        
-                if isinstance(raw_concept, str):
 
+            if isinstance(facets[raw_concept_scheme.name], dict):
+
+                for name, raw_concept in facets[raw_concept_scheme.name].items():
+        
+                    if isinstance(raw_concept, str):
+
+                        concepts.append(
+                            CEDAConcept(
+                                name = name,
+                                pref_label = name,
+                                definition = raw_concept
+                            )
+                        )
+
+                    else:
+
+                        try:
+
+                            raw_concept = Cmip6Concept(**raw_concept)
+                        
+                        except:
+
+                            raw_concept = Cmip6Concept(
+                                label = raw_concept["experiment_id"],
+                                alt_label = raw_concept["experiment"],
+                                label_extended = raw_concept["description"]
+                            )
+
+                        if raw_concept.label:
+                            pref_label = raw_concept.label
+                        else:
+                            pref_label = name
+
+                        concept = CEDAConcept(
+                            name = name,
+                            pref_label = pref_label
+                        )
+
+                        if raw_concept.label_extended:
+                            concept.definition = raw_concept.label_extended
+
+                        if raw_concept.alt_label:
+                            concept.alt_label = raw_concept.alt_label
+                        
+                        concepts.append(concept)
+            
+            else:
+
+                for name in facets[raw_concept_scheme.name]:
+        
                     concepts.append(
                         CEDAConcept(
-                            name = name,
-                            pref_label = name,
-                            definition = raw_concept
+                            name = name.replace(' ', '_'),
+                            pref_label = name
                         )
                     )
 
-                else:
-
-                    raw_concept = Cmip6Concept(**raw_concept)
-
-                    if raw_concept.label:
-                        pref_label = raw_concept.label
-                    else:
-                        pref_label = name
-
-                    concept = CEDAConcept(
-                        name = name,
-                        pref_label = pref_label
-                    )
-
-                    if raw_concept.label_extended:
-                        concept.definition = raw_concept.label_extended
-
-                    if raw_concept.alt_label:
-                        concept.alt_label = raw_concept.alt_label
-                    
-                    concepts.append(concept)
-            
         concept_scheme.concepts = concepts
 
         return concept_scheme
