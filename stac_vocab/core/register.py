@@ -9,13 +9,10 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 # Standard imports
-from abc import ABCMeta, abstractmethod
 import logging
-import json
-from glob import glob
 from typing import Callable
-from ..sources.base import BaseWorkflow
-from rdflib import Graph, Literal, Namespace, RDF, SKOS
+from .workflow import BaseWorkflow
+
 
 logger = logging.getLogger(__name__)
 
@@ -64,85 +61,3 @@ class WorkflowFactory:
         exec_class = cls.registry[name]
         workflow = exec_class(**kwargs)
         return workflow
-
-
-@WorkflowFactory.register('cmip6')
-class Cmip6Workflow(BaseWorkflow):
-    """? or importer class see. cmip5"""
-
-
-    def create_vocab(self, config):
-        graph = Graph()
-        graph.bind('skos', SKOS)
-        namespace = Namespace("http://test.org/cmip6/")
-        for concept_scheme in config["concept_schemes"]:
-            with open(concept_scheme["location"]) as f:
-                facets = json.load(f)
-                concept_scheme_uri = namespace[concept_scheme["name"]]
-                graph.add((concept_scheme_uri, RDF.type, SKOS.ConceptScheme))
-                graph.add((concept_scheme_uri, SKOS.prefLabel, Literal(concept_scheme["prefLabel"], lang='en')))
-
-                if "altLabel" in concept_scheme.keys():
-                    graph.add((concept_scheme_uri, SKOS.altLabel, Literal(concept_scheme["altLabel"], lang='en')))
-
-            for key, concept in facets[concept_scheme["name"]].items():
-                if isinstance(concept, str):
-                    concept_uri = namespace[key]
-                    graph.add((concept_uri, RDF.type, SKOS.Concept))
-                    graph.add((concept_uri, SKOS.inScheme, concept_scheme_uri))
-                    graph.add((concept_uri, SKOS.prefLabel, Literal(key, lang='en')))
-                    graph.add((concept_uri, SKOS.definition, Literal(concept, lang='en')))
-
-                else:
-                    concept_uri = namespace[key]
-                    graph.add((concept_uri, RDF.type, SKOS.Concept))
-                    graph.add((concept_uri, SKOS.inScheme, concept_scheme_uri))
-                    
-                    if "label" in concept.keys():
-                        graph.add((concept_uri, SKOS.prefLabel, Literal(concept["label"], lang='en')))
-                    else:
-                        graph.add((concept_uri, SKOS.prefLabel, Literal(key, lang='en')))
-                    
-                    if "label_extended" in concept.keys():
-                        graph.add((concept_uri, SKOS.definition, Literal(concept["label_extended"], lang='en')))
-                    
-        return graph
-
-    def run(self, config):
-        vocab = self.create_vocab(config)
-
-        return vocab
-
-
-@WorkflowFactory.register('ceda')
-class CedaWorkflow(BaseWorkflow):
-    """? or importer class see. cmip5"""
-
-
-    def create_vocab(self, config):
-        graph = Graph()
-        graph.bind('skos', SKOS)
-        # read vocabs from cache
-        for file in glob("cache/*.xml"):
-            graph.parse(file)
-        
-        namespace = Namespace("http://test.org/ceda/")
-
-        for concept_scheme in config["concept_schemes"]:
-            concept_scheme_uri = namespace[concept_scheme["name"]]
-            graph.add((concept_scheme_uri, RDF.type, SKOS.ConceptScheme))
-            graph.add((concept_scheme_uri, SKOS.prefLabel, Literal(concept_scheme["prefLabel"], lang='en')))
-            if "definition" in concept_scheme.keys():
-                        graph.add((concept_scheme_uri, SKOS.definition, Literal(concept_scheme["definition"], lang='en')))
-
-            for sub_scheme in concept_scheme["sub_schemes"]:
-                sub_namespace =  Namespace(sub_scheme["namespace"])
-                graph.add((concept_scheme_uri, SKOS.narrower, sub_namespace[sub_scheme["name"]]))
-                graph.add((sub_namespace[sub_scheme["name"]], SKOS.broader, concept_scheme_uri))
-        
-        return graph
-
-    def run(self, config):
-        vocab = self.create_vocab(config)
-
-        return vocab

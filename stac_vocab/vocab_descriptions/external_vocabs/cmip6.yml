@@ -1,0 +1,69 @@
+namespace: cmip6
+workflow: cmip6
+workflow_inputs:
+  concept_schemes:
+    - name: table_id
+      pref_label: table_id
+      alt_label: Table ID
+      description: "A table id is a ..."
+      location: "../cmip6-data/CMIP6_table_id.json"
+    - name: sub_experiment_id
+      pref_label: sub_experiment_id
+      alt_label: Sub Experiment ID
+      description: "A sub experiment id is a ..."
+      location: "../cmip6-data/CMIP6_sub_experiment_id.json"
+    - name: source_type
+      pref_label: source_type
+      alt_label: Source Type
+      description: "A source type is a ..."
+      location: "../cmip6-data/CMIP6_source_type.json"
+    - name: source_id
+      pref_label: source_id
+      alt_label: Source ID
+      description: "A source id is a ..."
+      location: "../cmip6-data/CMIP6_source_id.json"
+    - name: required_global_attributes
+      pref_label: required_global_attributes
+      alt_label: Required Global Attributes
+      description: "A required global attributes is a ..."
+      location: "../cmip6-data/CMIP6_required_global_attributes.json"
+    - name: realm
+      pref_label: realm
+      alt_label: Realm
+      description: "A realm is a ..."
+      location: "../cmip6-data/CMIP6_realm.json"
+    - name: nominal_resolution
+      pref_label: nominal_resolution
+      alt_label: Nominal Resolution
+      description: "A nominal resolution is a ..."
+      location: "../cmip6-data/CMIP6_nominal_resolution.json"
+    - name: institution_id
+      pref_label: institution_id
+      alt_label: Institution ID
+      description: "A institution id is a ..."
+      location: "../cmip6-data/CMIP6_institution_id.json"
+    - name: grid_label
+      pref_label: grid_label
+      alt_label: Grid Label
+      description: "A grid label is a ..."
+      location: "../cmip6-data/CMIP6_grid_label.json"
+    - name: frequency
+      pref_label: frequency
+      alt_label: Frequency
+      description: "A frequency is a ..."
+      location: "../cmip6-data/CMIP6_frequency.json"
+    - name: experiment_id
+      pref_label: experiment_id
+      alt_label: Experiment ID
+      description: "A experiment id is a ..."
+      location: "../cmip6-data/CMIP6_experiment_id.json"
+    - name: activity_id
+      pref_label: activity_id
+      alt_label: Activity ID
+      description: "A activity id is a ..."
+      location: "../cmip6-data/CMIP6_activity_id.json"
+    - name: mip_era
+      pref_label: mip_era
+      alt_label: MIP ERA
+      description: "A mip era is a ..."
+      location: "../cmip6-data/CMIP6_mip_era.json"

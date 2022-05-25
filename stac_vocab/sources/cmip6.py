@@ -9,39 +9,135 @@ __copyright__ = 'Copyright 2018 United Kingdom Research and Innovation'
 __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
-# from .base import BaseWorkflow
-# from ..core import WorkflowFactory
+import json
+import os
 
-# import json
-# from rdflib import Graph, RDF, Namespace, SKOS
+from typing import Optional
+from pydantic import BaseModel
 
-# # Use the JSON importer
-# # Create and RDF object
-# # return
-
-# @WorkflowFactory.register('cmip6')
-# class Cmip6Workflow(BaseWorkflow):
-#     """? or importer class see. cmip5"""
+from ..core import WorkflowFactory, BaseWorkflow, CEDAConcept, CEDAConceptScheme
 
 
-#     def create_vocab(self, config):
-#         graph = Graph()
-#         graph.bind('skos', SKOS)
-#         namespace = Namespace("http://test.org/cmip6/")
-#         for concept in config["concepts"]:
-#             with open(concept["location"]) as f:
-#                 facets = json.load(f)
-#                 graph.add((namespace[concept["name"]], RDF.type, SKOS.ConceptScheme))
+class Cmip6Concept(BaseModel):
+    """Common model for concept scheme."""
 
-#             for f, value in facets[concept["name"]].items():
-#                 graph.add((namespace[f], RDF.type, SKOS.Concept))
-#                 graph.add((namespace[f], SKOS.inScheme, namespace[concept["name"]]))
+    label: str
+
+    alt_label: Optional[str]
+    label_extended: Optional[str]
+
+
+class Cmip6ConceptScheme(BaseModel):
+    """Common model for concept scheme."""
+
+    name: str
+
+    pref_label: str
+    alt_label: Optional[str]
+    description: str
+
+    location: str
+
+
+class Cmip6WorkflowInputs(BaseModel):
+    """Common model for concept scheme."""
+
+    concept_schemes: list[Cmip6ConceptScheme]
+
+
+@WorkflowFactory.register('cmip6')
+class Cmip6Workflow(BaseWorkflow):
+    """? or importer class see. cmip5"""
+    INPUTS_CLASS = Cmip6WorkflowInputs
+
+    def run(self):
+
+        concept_schemes = []
+
+        for concept_scheme in self.inputs.concept_schemes:
+            concept_schemes.append(self.parser(concept_scheme))
+        
+        self.create_vocab(concept_schemes)
+    
+    def parser(self, raw_concept_scheme):
+
+        concept_scheme = CEDAConceptScheme(
+            name = raw_concept_scheme.name,
+            pref_label = raw_concept_scheme.pref_label
+        )
+
+        if raw_concept_scheme.alt_label:
+
+            concept_scheme.alt_label = raw_concept_scheme.alt_label
+
+        if raw_concept_scheme.description:
+
+            concept_scheme.definition = raw_concept_scheme.description
+
+        with open(raw_concept_scheme.location) as f:
+
+            facets = json.load(f)
+            concepts = []
+
+            if isinstance(facets[raw_concept_scheme.name], dict):
+
+                for name, raw_concept in facets[raw_concept_scheme.name].items():
+        
+                    if isinstance(raw_concept, str):
+
+                        concepts.append(
+                            CEDAConcept(
+                                name = name,
+                                pref_label = name,
+                                definition = raw_concept
+                            )
+                        )
+
+                    else:
+
+                        try:
+
+                            raw_concept = Cmip6Concept(**raw_concept)
+                        
+                        except:
+
+                            raw_concept = Cmip6Concept(
+                                label = raw_concept["experiment_id"],
+                                alt_label = raw_concept["experiment"],
+                                label_extended = raw_concept["description"]
+                            )
+
+                        if raw_concept.label:
+                            pref_label = raw_concept.label
+                        else:
+                            pref_label = name
+
+                        concept = CEDAConcept(
+                            name = name,
+                            pref_label = pref_label
+                        )
+
+                        if raw_concept.label_extended:
+                            concept.definition = raw_concept.label_extended
+
+                        if raw_concept.alt_label:
+                            concept.alt_label = raw_concept.alt_label
+                        
+                        concepts.append(concept)
             
-#         return graph
+            else:
 
-#     def run(self, config):
-#         vocab = self.create_vocab(config)
+                for name in facets[raw_concept_scheme.name]:
+        
+                    concepts.append(
+                        CEDAConcept(
+                            name = name.replace(' ', '_'),
+                            pref_label = name
+                        )
+                    )
 
-#         return vocab
+        concept_scheme.concepts = concepts
+
+        return concept_scheme
 
 

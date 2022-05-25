@@ -1,0 +1,34 @@
+namespace: ceda
+workflow: ceda
+workflow_inputs:
+  concept_schemes:
+    - name: funder
+      pref_label: funder
+      description: "A funder is a ..."
+    - name: institution
+      pref_label: institution
+      description: "A institution is a ..."
+    - name: model
+      pref_label: model
+      description: "A model is a ..."
+      sub_schemes:
+        - name: source_id
+          namespace: cmip6
+    - name: licence_category
+      pref_label: licence_category
+      description: "A licence category is a ..."
+    - name: instrument_type
+      pref_label: instrument_type
+      description: "A instrument type is a ..."
+    - name: instrument
+      pref_label: instrument
+      description: "A instrument is a ..."
+    - name: variable
+      pref_label: variable
+      description: "A variable is a ..."
+    - name: platform_type
+      pref_label: platform_type
+      description: "A platform type is a ..."
+    - name: format
+      pref_label: format
+      description: "A format is a ..."

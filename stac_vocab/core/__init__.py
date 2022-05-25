@@ -9,3 +9,4 @@ __license__ = 'BSD - see LICENSE file in top-level package directory'
 __contact__ = 'richard.d.smith@stfc.ac.uk'
 
 from .register import WorkflowFactory
+from .workflow import BaseWorkflow, CEDAConcept, CEDAConceptScheme, CEDASubScheme
